@@ -1,4 +1,4 @@
-阅读本文前，请先阅读前文[数据流前篇]( )
+阅读本文前，请先阅读前文[数据流前篇](https://github.com/Smallnuo/roadMap/blob/main/React/%E5%86%8D%E8%B0%88connect%E8%AE%BE%E8%AE%A1.md)
 
 ## 回顾以及引入问题
 
