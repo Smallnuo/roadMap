@@ -6,6 +6,7 @@
 5. [Iterator 与 Generator](https://github.com/Smallnuo/roadMap/blob/main/JavaScript/Iterator%E4%B8%8EGenerator.md)
 6. [Promise](https://github.com/Smallnuo/roadMap/blob/main/JavaScript/Promise.md)
 7. [Promise、Generator、Async&Await 对比](https://github.com/Smallnuo/roadMap/blob/main/JavaScript/Promise%E3%80%81Generator%E3%80%81Async%26Await%20%E5%AF%B9%E6%AF%94.md)
+8. [Proxy、Reflect、Decorator](https://github.com/Smallnuo/roadMap/blob/main/JavaScript/Proxy%E3%80%81Reflect%E3%80%81Decorator.md)
 
 ## React
 1. [重新认识受控和非受控组件](https://github.com/Smallnuo/roadMap/blob/main/React/%E9%87%8D%E6%96%B0%E8%AE%A4%E8%AF%86%E5%8F%97%E6%8E%A7%E5%92%8C%E9%9D%9E%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6.md)
