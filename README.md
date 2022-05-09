@@ -17,3 +17,5 @@
 ## 工程化
 ### 包管理
 1. [我所知道的npm、Yarn、pnpm包管理](https://github.com/Smallnuo/roadMap/blob/main/%E5%B7%A5%E7%A8%8B%E5%8C%96/%E6%88%91%E6%89%80%E7%9F%A5%E9%81%93%E7%9A%84npm%E3%80%81Yarn%E3%80%81pnpm%E5%8C%85%E7%AE%A1%E7%90%86.md)
+### babel
+1. [babel基础配置](https://github.com/Smallnuo/roadMap/blob/main/%E5%B7%A5%E7%A8%8B%E5%8C%96/babel%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE.md)
