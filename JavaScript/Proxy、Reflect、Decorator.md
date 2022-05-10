@@ -360,7 +360,7 @@ Object.setPrototypeOf(obj, proxy);
 console.log(obj.value); // qianxun
 ```
 
-我们可以使用 ***`Reflect***.get(target, key, receiver)` , `receiver` 是 obj，可以通过第三个参数修正我们的上下文。
+我们可以使用 `Reflect.get(target, key, receiver)` , `receiver` 是 obj，可以通过第三个参数修正我们的上下文。
 
 ```jsx
 const parent = {
