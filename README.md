@@ -1,13 +1,14 @@
 # 阅读指南
 ## JavaScript
 1. [JavaScript 之执行上下文那些事](JavaScript/JavaScript之执行上下文那些事.md)
-2. [JavaScript 继承之ES5](JavaScript/JavaScript继承之ES5.md)
-3. [JavaScript 继承之ES6](JavaScript/JavaScript继承之ES6.md)
-4. [ES6新增数据结构](JavaScript/ES6新增数据结构.md)
-5. [Iterator 与 Generator](JavaScript/Iterator与Generator.md)
-6. [Promise](JavaScript/Promise.md)
-7. [Promise、Generator、Async&Await 对比](JavaScript/Promise、Generator、Async&Await%20对比.md)
-8. [Proxy、Reflect、Decorator](JavaScript/Proxy、Reflect、Decorator.md)
+2. [数据类型转换](JavaScript/数据类型转换/数据类型转换.md)
+3. [JavaScript 继承之ES5](JavaScript/JavaScript继承之ES5.md)
+4. [JavaScript 继承之ES6](JavaScript/JavaScript继承之ES6.md)
+5. [ES6新增数据结构](JavaScript/ES6新增数据结构.md)
+6. [Iterator 与 Generator](JavaScript/Iterator与Generator.md)
+7. [Promise](JavaScript/Promise.md)
+8. [Promise、Generator、Async&Await 对比](JavaScript/Promise、Generator、Async&Await%20对比.md)
+9. [Proxy、Reflect、Decorator](JavaScript/Proxy、Reflect、Decorator.md)
 
 ## Chorme
 1. [XSS 和 CSRF](Chrome/XSS%20和%20CSRF.md)
