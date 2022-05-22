@@ -30,3 +30,4 @@
 1. [我所知道的npm、Yarn、pnpm包管理](工程化/我所知道的npm、Yarn、pnpm包管理.md)
 ### babel
 1. [babel基础配置](工程化/babel基础配置.md)
+2. [babel插件和eslint插件对比](工程化/babel插件和eslint插件对比.md)
