@@ -14,8 +14,7 @@
 1. [XSS 和 CSRF](Chrome/XSS%20和%20CSRF.md)
 2. [前端缓存之HTTP缓存](Chrome/前端缓存之HTTP缓存.md)
 3. [WIP 基于 Performance 分析事件循环](Chrome/基于Performace分析事件循环.md)
-4. [基于koa分析Etag处理流程](Chrome/基于koa分析Etag处理流程.md)
-5. [WIP 浏览器渲染流程](Chrome/浏览器渲染流程.md)
+4. [WIP 浏览器渲染流程](Chrome/浏览器渲染流程.md)
 
 ## React
 1. [重新认识受控和非受控组件](React/重新认识受控和非受控组件.md)
