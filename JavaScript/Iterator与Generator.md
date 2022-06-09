@@ -133,7 +133,7 @@ for(let value of typeArry){
 // 2
 ```
 
-1. Generator 对象
+5. Generator 对象
 
 ```jsx
 function* gen(){
@@ -145,7 +145,7 @@ for(let value of gen()){
 }
 ```
 
-1. String
+6. String
 
 为什么 Object 不具有原生 Iterator ？
 
@@ -168,7 +168,10 @@ var str = 'hello';
 [...str] //  ['h','e','l','l','o']
 ```
 
-扩展运算符等是调用 Iterator 接口，那么 Object 没有部署 Iterator 接口，为什么也能使用 ... 运算符呢？
+Q: 扩展运算符等是调用 Iterator 接口，那么 Object 没有部署 Iterator 接口，为什么也能使用 ... 运算符呢？
+A: 扩展运算符分为两种
+   + 一种是用在函数参数、数组展开的场合，这种情况要求对象是可迭代的（iterable）
+   + 另一种是用于对象展开，也就是 {…obj} 形式，这种情况需要对象是可枚举的（enumerable）
 
 ```jsx
 let obj1 = {
@@ -177,9 +180,11 @@ let obj1 = {
 let obj2 = {
     age: 3
 }
+// 数组对象是可枚举的
 let obj = {...obj1, ...obj2}
 console.log(obj) //{name: 'qianxun', age: 3}
 
+// 普通对象默认是不可迭代的
 let obj = [...obj1, ...obj2]
 console.log(obj) // object is not iterable
 ```
