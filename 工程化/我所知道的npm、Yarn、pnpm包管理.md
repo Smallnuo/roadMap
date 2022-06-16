@@ -249,23 +249,31 @@ npm3 仿佛解决了 npm2 的冗余问题，但是也没有完全解决。例如
 
 content-v2 目录用于存储 tar 包的缓存，而 index-v5 目录用于存储 tar 的 hash 值
 
-npm 执行安装的时候会根据 lock 文件中存储的`integrity、version、name`生成一个唯一的`key`对应到`index-v5`目录下的缓存记录，从而找到 tar 包的 hash，在根据 hash 去找缓存的tar 包来使用
+**查找缓存的步骤**
 
-```shell
-grep "https://registry.npmjs.org/base64-js/-/base64-js-1.0.2.tgz" -r index-v5
-```
+1. 根据 lock 文件中的`integrity`和`resolved`字段，通过`pacote:range-manifest:{url}:{integrity}`构建出key
+    例如: `pacote:version-manifest:https://registry.npmjs.org/base64-js/-/base64-js-1.0.2.tgz:sha1-R0IRyV5s8qVH20YeT2d4tR0I+mU=`
 
-在 index-v5 中查找 base64-js-1.0.2 的缓存记录，会得到一个json串，其中`_shasum`属性就是tar包的hash，其中前四位就是缓存的目录，在 content-v2 中进入该目录就能找到对应的压缩依赖包，执行`tar -xvf file`就能解压文件
+2. 通过 SHA256 算法加密得到一个 Hash 值
+    49c780b41697e5f2aa0641d954ec662e78d57096456d0108d1a84ba538306284
+
+3. 加密之后的 Hash 值的前四位就是 index-v5 目录的下两级
+    _cacache/index-v5/49/c7/…
+
+4. 通过路径找到对应的索引文件，在文件中找到对应的 _shasum 字段
+    474211c95e6cf2a547db461e4f6778b51d08fa65
+
+5. 上述字符串表明的就是缓存包的位置，对应的前四位为目录的下两级,执行`tar -xvf file`就能解压文件
+    _cacache/content-v2/47/42/…
 
 ## 文件完整性
 
 上文提到过几次文件完整性，那具体什么是文件完整性？
+在下载依赖包之前，能够拿到 npm 对该依赖包计算的文件完整性值。执行 npm info 命令，integrity 就是文件完整性值
 
-在下载依赖包之前，能够拿到 npm 对该依赖包计算的 hash 值。执行 npm info 命令，`shasum`就是 hash
+[![15](https://user-images.githubusercontent.com/38368040/164896928-a9bf84d9-6d9c-467f-8df1-da2f54f8b02d.png)]
 
-![15](https://user-images.githubusercontent.com/38368040/164896928-a9bf84d9-6d9c-467f-8df1-da2f54f8b02d.png)
-
-用户下载依赖包到本地之后，要确定在下载的过程中没有出现错误，所以在下载完成之后在本地计算一次文件的 hash 值。如果两个 hash 值相同才能够确保下载的依赖是完整的；如果不同则需要重新下载
+用户下载依赖包到本地之后，要确定在下载的过程中没有出现错误，所以在下载完成之后在本地计算一次文件完整值。如果两个文件完整值相同才能够确保下载的依赖是完整的；如果不同则需要重新下载
 
 ## npmrc文件
 
