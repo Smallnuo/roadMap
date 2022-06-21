@@ -10,10 +10,11 @@
 8. [Promise、Generator、Async&Await 对比](JavaScript/Promise、Generator、Async&Await%20对比.md)
 9. [Proxy、Reflect、Decorator](JavaScript/Proxy、Reflect、Decorator.md)
 
-## Chorme
+## Chrome
 1. [XSS 和 CSRF](Chrome/XSS%20和%20CSRF.md)
 2. [前端缓存之HTTP缓存](Chrome/前端缓存之HTTP缓存.md)
 3. [WIP 浏览器渲染流程](Chrome/浏览器渲染流程.md)
+4. [Etag 篇](Chrome/Etag篇.md)
 
 ## React
 1. [重新认识受控和非受控组件](React/重新认识受控和非受控组件.md)
