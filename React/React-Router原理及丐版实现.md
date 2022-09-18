@@ -21,7 +21,7 @@
 #### history 模式
 
 1. history 提供了 `pushState` 和 `replaceState` 两个方法，这两个方法改变 URL 的 path 部分不会引起页面刷新
-2. 通过 [pop](https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event)state事件监听 URL 的改变。需要注意只在通过浏览器导航栏的前进后退改变 URL 时会触发`popstate`事件，通过`<a>`标签和`pushState`/`replaceState`不会触发`popstate`方法。但我们可以拦截`<a>`标签的点击事件和`pushState`/`replaceState`的调用来检测 URL 变化，也是可以达到监听 URL 的变化，相对`hashchange`显得略微复杂
+2. 通过 [popstate ](https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event)事件监听 URL 的改变。需要注意只在通过浏览器导航栏的前进后退改变 URL 时会触发`popstate`事件，通过`<a>`标签和`pushState`/`replaceState`不会触发`popstate`方法。但我们可以拦截`<a>`标签的点击事件和`pushState`/`replaceState`的调用来检测 URL 变化，也是可以达到监听 URL 的变化，相对`hashchange`显得略微复杂
 
 <img width="763" alt="image" src="https://user-images.githubusercontent.com/38368040/166694070-a31bfbc6-cfce-4928-bf8b-7111e3e6181a.png">
 
@@ -159,11 +159,11 @@ export const EventEmitter = () => {
 };
 ```
 
-### **Browser**History
+### BrowserHistory
 
 ```jsx
 const createBrowserHistory = () => {
-  const EventBus = EventEmitter(); //{push,call}
+  const EventBus = EventEmitter(); //{subscribe,emit}
   // 初始化location
   let location: ILocation = {
     pathname: window.location.pathname || "/"

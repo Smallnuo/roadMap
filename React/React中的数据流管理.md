@@ -236,7 +236,7 @@ store.dispatch = (action) => {
 };
 ```
 
-提取loggerMiddleware/catchMiddleware
+提取 loggerMiddleware/catchMiddleware
 
 ```jsx
 const loggerMiddleware = (action) => {
@@ -354,7 +354,7 @@ applyMiddleware 符合洋葱模型
 本文意在讲解 react 的数据流管理。从 react 本身的提供的数据流方式出发
 
 1.  基于`props`的单向数据流，串联父子和兄弟组件非常灵活，但是对于嵌套过深的组件，会使得中间组件都加上不需要的`props`数据
-1.  使用 Context 维护全局状态，介绍了 v16.3 之前/v16.3 之后/hooks，不同版本`context`的使用，以及 v16.3 之前版本的`context`的弊端。
+1.  使用 Context 维护全局状态，介绍了 v16.3 之前、v16.3 之后、hooks，不同版本`context`的使用，以及 v16.3 之前版本的`context`的弊端。
 1.  引入 redux，第三方的状态容器，以及 react-redux API(Provider/connect)分析与丐版实现，最后介绍了 redux 强大的中间件是如何重写 dispatch 方法
 
 > 参考连接
