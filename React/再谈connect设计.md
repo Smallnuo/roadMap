@@ -6,29 +6,29 @@
 
 ```jsx
 export const connect = (mapStateToProps, mapDispatchToProps) => (
-  WrappedComponent
+    WrappedComponent
 ) => (props) => {
-  const { ...wrapperProps } = props;
-  const context = useContext(ReactReduxContext);
-  const { store } = context; // 解构出store
-  const state = store.getState(); // 拿到state
-  //使用useReducer得到一个强制更新函数
-  const [, forceComponentUpdateDispatch] = useReducer((count) => count + 1, 0);
-  // 订阅state的变化，当state变化的时候执行回调
-  store.subscribe(() => {
-    forceComponentUpdateDispatch();
-  });
-  // 执行mapStateToProps和mapDispatchToProps
-  const stateProps = mapStateToProps?.(state);
-  const dispatchProps = mapDispatchToProps?.(store.dispatch);
-  // 组装最终的props
-  const actualChildProps = Object.assign(
-    {},
-    stateProps,
-    dispatchProps,
-    wrapperProps
-  );
-  return <WrappedComponent {...actualChildProps} />;
+    const { ...wrapperProps } = props;
+    const context = useContext(ReactReduxContext);
+    const { store } = context; // 解构出store
+    const state = store.getState(); // 拿到state
+    //使用useReducer得到一个强制更新函数
+    const [, forceComponentUpdateDispatch] = useReducer((count) => count + 1, 0);
+    // 订阅state的变化，当state变化的时候执行回调
+    store.subscribe(() => {
+        forceComponentUpdateDispatch();
+    });
+    // 执行mapStateToProps和mapDispatchToProps
+    const stateProps = mapStateToProps?.(state);
+    const dispatchProps = mapDispatchToProps?.(store.dispatch);
+    // 组装最终的props
+    const actualChildProps = Object.assign(
+        {},
+        stateProps,
+        dispatchProps,
+        wrapperProps
+    );
+    return <WrappedComponent {...actualChildProps} />;
 };
 ```
 
@@ -51,36 +51,36 @@ export const connect = (mapStateToProps, mapDispatchToProps) => (
 
 ```jsx
 export class Subscription {
-  constructor(store, parentSub) {
-    this.store = store;
-    this.parentSub = parentSub;
-    this.listeners = [];
-    this.handleChangeWrapper = this.handleChangeWrapper.bind(this);
-  }
-  //当前组件注册
-  addNestedSub(listener) {
-    this.listeners.push(listener);
-  }
-  //通知监听者
-  notifyNestedSub() {
-    this.listeners.forEach((listener) => listener());
-  }
-
-  // 回调函数的包装
-  handleChangeWrapper() {
-    if (this.onStateChange) {
-      this.onStateChange();
+    constructor(store, parentSub) {
+        this.store = store;
+        this.parentSub = parentSub;
+        this.listeners = [];
+        this.handleChangeWrapper = this.handleChangeWrapper.bind(this);
     }
+    //当前组件注册
+    addNestedSub(listener) {
+        this.listeners.push(listener);
+    }
+    //通知监听者
+    notifyNestedSub() {
+        this.listeners.forEach((listener) => listener());
+    }
+
+    // 回调函数的包装
+    handleChangeWrapper() {
+        if (this.onStateChange) {
+            this.onStateChange();
+        }
   }
 
-  //注册回调函数
-  //如果没有parentSub，说明是根组件注册到store上
-  //如果有，就注册到父组件的监听类上
-  trySubscribe() {
-    this.parentSub
-      ? this.parentSub.addNestedSub(this.handleChangeWrapper)
-      : this.store.subscribe(this.handleChangeWrapper);
-  }
+    //注册回调函数
+    //如果没有parentSub，说明是根组件注册到store上
+    //如果有，就注册到父组件的监听类上
+    trySubscribe() {
+        this.parentSub
+            ? this.parentSub.addNestedSub(this.handleChangeWrapper)
+            : this.store.subscribe(this.handleChangeWrapper);
+    }
 }
 ```
 
@@ -94,30 +94,30 @@ export class Subscription {
 
 ```jsx
 export const Provider = (props) => {
-  const { store, children, context } = props;
+    const { store, children, context } = props;
 
-  // 传给子组件的context{store,subscription}
-  const contextValue = useMemo(() => {
-    const subscription = new Subscription(store);
-    // 注册回调函数，通知子组件
-    subscription.onStateChange = subscription.notifyNestedSubs;
-    return { store, subscription };
-  }, [store]);
+    // 传给子组件的context{store,subscription}
+    const contextValue = useMemo(() => {
+        const subscription = new Subscription(store);
+        // 注册回调函数，通知子组件
+        subscription.onStateChange = subscription.notifyNestedSubs;
+        return { store, subscription };
+    }, [store]);
 
-  const previousState = useMemo(() => store.getState(), [store]);
+    const previousState = useMemo(() => store.getState(), [store]);
 
-  useEffect(() => {
-    const { subscription } = contextValue;
-    // 添加监听者
-    subscription.trySubscribe();
-    // 如果state发生改变，通知监听者
-    if (previousState !== store.getState()) {
-      subscription.onStateChange();
-    }
-  }, [contextValue, previousState, store]);
+    useEffect(() => {
+        const { subscription } = contextValue;
+        // 添加监听者
+        subscription.trySubscribe();
+        // 如果state发生改变，通知监听者
+        if (previousState !== store.getState()) {
+            subscription.onStateChange();
+        }
+    }, [contextValue, previousState, store]);
 
-  const Context = context || ReactReduxContext;
-  return <Context.Provider value={contextValue}>{children}</Context.Provider>;
+    const Context = context || ReactReduxContext;
+    return <Context.Provider value={contextValue}>{children}</Context.Provider>;
 };
 ```
 
@@ -131,55 +131,55 @@ export const Provider = (props) => {
 
 ```jsx
 export const connect = (mapStateToProps, mapDispatchToProps) => (
-  WrappedComponent
+    WrappedComponent
 ) => (props) => {
-  const { ...wrapperProps } = props;
-  const context = useContext(ReactReduxContext);
-  const { store, subscription: parentSub } = context; // 解构出store
-  const subscription = new Subscription(store, parentSub); // 创建当前组件的subscription
-  // 保存上一次的值
-  const lastChildProps = useRef();
-  //使用useReducer得到一个强制更新函数
-  const [, forceComponentUpdateDispatch] = useReducer((count) => count + 1, 0);
+    const { ...wrapperProps } = props;
+    const context = useContext(ReactReduxContext);
+    const { store, subscription: parentSub } = context; // 解构出store
+    const subscription = new Subscription(store, parentSub); // 创建当前组件的subscription
+    // 保存上一次的值
+    const lastChildProps = useRef();
+    //使用useReducer得到一个强制更新函数
+    const [, forceComponentUpdateDispatch] = useReducer((count) => count + 1, 0);
 
-  // 获取传递给组件的props
-  const childPropsSelector = (store, wrapperProps) => {
-    const state = store.getState();
-    // 执行mapStateToProps和mapDispatchToProps
-    const stateProps = mapStateToProps?.(state);
-    const dispatchProps = mapDispatchToProps?.(store.dispatch);
-    return Object.assign({}, stateProps, dispatchProps, wrapperProps);
-  };
+    // 获取传递给组件的props
+    const childPropsSelector = (store, wrapperProps) => {
+        const state = store.getState();
+        // 执行mapStateToProps和mapDispatchToProps
+        const stateProps = mapStateToProps?.(state);
+        const dispatchProps = mapDispatchToProps?.(store.dispatch);
+        return Object.assign({}, stateProps, dispatchProps, wrapperProps);
+    };
 
-  //对比state，处理回调
-  const compareStateForUpdate = () => {
-    const newChildProps = childPropsSelector(store, wrapperProps);
-    if (isEqual(newChildProps, lastChildProps.current)) return;
-    lastChildProps.current = newChildProps;
-    forceComponentUpdateDispatch();
-    subscription.notifyNestedSubs();
-  };
-  const actualChildProps = childPropsSelector(store, wrapperProps);
+    //对比state，处理回调
+    const compareStateForUpdate = () => {
+        const newChildProps = childPropsSelector(store, wrapperProps);
+        if (isEqual(newChildProps, lastChildProps.current)) return;
+        lastChildProps.current = newChildProps;
+        forceComponentUpdateDispatch();
+        subscription.notifyNestedSubs();
+    };
+    const actualChildProps = childPropsSelector(store, wrapperProps);
 
-  useLayoutEffect(() => {
-    lastChildProps.current = actualChildProps;
-  }, [actualChildProps]);
+    useLayoutEffect(() => {
+        lastChildProps.current = actualChildProps;
+    }, [actualChildProps]);
 
-  // 使用subscription注册回调
-  subscription.onStateChange = compareStateForUpdate;
-  subscription.trySubscribe();
+    // 使用subscription注册回调
+    subscription.onStateChange = compareStateForUpdate;
+    subscription.trySubscribe();
 
-  //重写contextValue，把自己的subscription传递下去
-  const overWriteContextValue = {
-    ...context,
-    subscription
-  };
+    //重写contextValue，把自己的subscription传递下去
+    const overWriteContextValue = {
+        ...context,
+        subscription
+    };
 
-  return (
-    <ReactReduxContext.Provider value={overWriteContextValue}>
-      <WrappedComponent {...actualChildProps} />
-    </ReactReduxContext.Provider>
-  );
+    return (
+        <ReactReduxContext.Provider value={overWriteContextValue}>
+            <WrappedComponent {...actualChildProps} />
+        </ReactReduxContext.Provider>
+    );
 };
 ```
 

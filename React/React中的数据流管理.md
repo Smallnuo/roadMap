@@ -12,7 +12,7 @@
 
 ### 基于 Props 的单向数据流
 
-React 是自上而下的单向数据流，容器组件&展示组件是最常见的 React 组件设计方案。容器组件负责处理复杂的业务逻辑和数据，展示组件负责处理UI层。通常我们会把展示组件抽出来复用或者组件库的封装，容器组件自身通过 state 来管理状态，setState 更新状态，从而更新 UI，通过 props 将自身的 state 传递给展示组件实现通信
+React 是自上而下的单向数据流，容器组件&展示组件是最常见的 React 组件设计方案。容器组件负责处理复杂的业务逻辑和数据，展示组件负责处理 UI 层。通常我们会把展示组件抽出来复用或者组件库的封装，容器组件自身通过 state 来管理状态，setState 更新状态，从而更新 UI，通过 props 将自身的 state 传递给展示组件实现通信
 
 <img width="770" alt="image" src="https://user-images.githubusercontent.com/38368040/155837019-dc9ea4b9-0cac-4c97-be7f-b6e9cd3f9a23.png">
 
@@ -29,24 +29,24 @@ Context API是 React 官方提供的一种组件树全局通信方式
 
 ```jsx
 const defaultValue = {
-  count: 0,
-  increment: () => {}
+    count: 0,
+    increment: () => {}
 };
 
 const ValueContext = React.createContext(defaultValue);
 
 <ValueContext.Provider value={this.state.contextState}>
-  <div className="App">
-    <div>Count: {count}</div>
-    <ButtonContainer />
-    <ValueContainer />
-  </div>
+    <div className="App">
+        <div>Count: {count}</div>
+        <ButtonContainer />
+        <ValueContainer />
+    </div>
 </ValueContext.Provider>
 
 <ValueContext.Consumer>
-  {({ increment }) => (
-    <button onClick={increment} className="button">increment</button>
-  )}
+    {({ increment }) => (
+        <button onClick={increment} className="button">increment</button>
+    )}
 </ValueContext.Consumer>
 ```
 
@@ -146,10 +146,10 @@ enhancer(Component)
 
 ```jsx
 export const Provider = (props) => {
-  const { store, children, context } = props;
-  const contextValue = { store };
-  const Context = context || ReactReduxContext;
-  return <Context.Provider value={contextValue}>{children}</Context.Provider>
+    const { store, children, context } = props;
+    const contextValue = { store };
+    const Context = context || ReactReduxContext;
+    return <Context.Provider value={contextValue}>{children}</Context.Provider>
 };
 ```
 
@@ -160,33 +160,32 @@ import { useContext, useReducer } from "react";
 import { ReactReduxContext } from "./ReactReduxContext";
 
 export const connect = (mapStateToProps, mapDispatchToProps) => (
-  WrappedComponent
+    WrappedComponent
 ) => (props) => {
-  const { ...wrapperProps } = props;
-  const context = useContext(ReactReduxContext);
-  const { store } = context; // 解构出 store
-  const state = store.getState(); // 拿到 state
-  //使用 useReducer 得到一个强制更新函数
-  const [, forceComponentUpdateDispatch] = useReducer((count) => count + 1, 0);
-  // 订阅 state 的变化，当 state 变化的时候执行回调
-  store.subscribe(() => {
-    forceComponentUpdateDispatch();
-  });
-  // 执行 mapStateToProps 和 mapDispatchToProps
-  const stateProps = mapStateToProps?.(state);
-  const dispatchProps = mapDispatchToProps?.(store.dispatch);
-  // 组装最终的 props
-  const actualChildProps = Object.assign(
-    {},
-    stateProps,
-    dispatchProps,
-    wrapperProps
-  );
-  return <WrappedComponent {...actualChildProps} />;
+    const { ...wrapperProps } = props;
+    const context = useContext(ReactReduxContext);
+    const { store } = context; // 解构出 store
+    const state = store.getState(); // 拿到 state
+    //使用 useReducer 得到一个强制更新函数
+    const [, forceComponentUpdateDispatch] = useReducer((count) => count + 1, 0);
+    // 订阅 state 的变化，当 state 变化的时候执行回调
+    store.subscribe(() => {
+        forceComponentUpdateDispatch();
+    });
+    // 执行 mapStateToProps 和 mapDispatchToProps
+    const stateProps = mapStateToProps?.(state);
+    const dispatchProps = mapDispatchToProps?.(store.dispatch);
+    // 组装最终的 props
+    const actualChildProps = Object.assign(
+        {},
+        stateProps,
+        dispatchProps,
+        wrapperProps
+    );
+    return <WrappedComponent {...actualChildProps} />;
 };
 
 ```
-
 
 ### redux Middleware
 
@@ -202,10 +201,10 @@ export const connect = (mapStateToProps, mapDispatchToProps) => (
 
 ```jsx
 store.dispatch = (action) => {
-  console.log("this state", store.getState());
-  console.log(action);
-  next(action);
-  console.log("next state", store.getState());
+    console.log("this state", store.getState());
+    console.log(action);
+    next(action);
+    console.log("next state", store.getState());
 };
 ```
 
@@ -213,11 +212,11 @@ store.dispatch = (action) => {
 
 ```jsx
 store.dispatch = (action) => {
-  try {
-    next(action);
-  } catch (err) {
-    console.log("catch---", err);
-  }
+    try {
+        next(action);
+    } catch (err) {
+        console.log("catch---", err);
+    }
 };
 ```
 
@@ -225,14 +224,14 @@ store.dispatch = (action) => {
 
 ```jsx
 store.dispatch = (action) => {
-  try {
-    console.log("this state", store.getState());
-    console.log(action);
-    next(action);
-    console.log("next state", store.getState());
-  } catch (err) {
-    console.log("catch---", err);
-  }
+    try {
+        console.log("this state", store.getState());
+        console.log(action);
+        next(action);
+        console.log("next state", store.getState());
+    } catch (err) {
+        console.log("catch---", err);
+    }
 };
 ```
 
@@ -240,17 +239,17 @@ store.dispatch = (action) => {
 
 ```jsx
 const loggerMiddleware = (action) => {
-  console.log("this state", store.getState());
-  console.log("action", action);
-  next(action);
-  console.log("next state", store.getState());
+    console.log("this state", store.getState());
+    console.log("action", action);
+    next(action);
+    console.log("next state", store.getState());
 };
 const catchMiddleware = (action) => {
-  try {
-    loggerMiddleware(action);
-  } catch (err) {
-    console.error("错误报告: ", err);
-  }
+    try {
+        loggerMiddleware(action);
+    } catch (err) {
+        console.error("错误报告: ", err);
+    }
 };
 store.dispatch = catchMiddleware
 ```
@@ -259,18 +258,18 @@ catchMiddleware 中都写死了调用的 loggerMiddleware，loggerMiddleware 中
 
 ```jsx
 const loggerMiddleware = (next) => (action) => {
-  console.log("this state", store.getState());
-  console.log("action", action);
-  next(action);
-  console.log("next state", store.getState());
+    console.log("this state", store.getState());
+    console.log("action", action);
+    next(action);
+    console.log("next state", store.getState());
 };
 const catchMiddleware = (next) => (action) => {
-  try {
-    /*loggerMiddleware(action);*/
-    next(action);
-  } catch (err) {
-    console.error("错误报告: ", err);
-  }
+    try {
+        /*loggerMiddleware(action);*/
+        next(action);
+    } catch (err) {
+        console.error("错误报告: ", err);
+    }
 };
 /*loggerMiddleware 变成参数传进去*/
 store.dispatch = catchMiddleware(loggerMiddleware(next));
@@ -280,18 +279,18 @@ middleware 中接受一个 store，就能够把上面的方法提取到单独的
 
 ```jsx
 export const catchMiddleware = (store) => (next) => (action) => {
-  try {
-    next(action);
-  } catch (err) {
-    console.error("错误报告: ", err);
-  }
+    try {
+        next(action);
+    } catch (err) {
+        console.error("错误报告: ", err);
+    }
 };
 
 export const loggerMiddleware = (store) => (next) => (action) => {
-  console.log("this state", store.getState());
-  console.log("action", action);
-  next(action);
-  console.log("next state", store.getState());
+    console.log("this state", store.getState());
+    console.log("action", action);
+    next(action);
+    console.log("next state", store.getState());
 };
 
 const logger = loggerMiddleware(store);
@@ -303,21 +302,21 @@ store.dispatch = exception(logger(next));
 
 ```js
 export const applyMiddleware = (middlewares) => (oldCreateStore) => (reducer, initState) => {
-  //获得老的store
-  const store = oldCreateStore(reducer, initState);
-  //[catch, logger]
-  const chain = middlewares.map((middleware) => middleware(store));
-  let oldDispatch = store.dispatch;
-  chain
-    .reverse()
-    .forEach((middleware) => (oldDispatch = middleware(oldDispatch)));
-  store.dispatch = oldDispatch;
-  return store;
-  };
+    //获得老的store
+    const store = oldCreateStore(reducer, initState);
+    //[catch, logger]
+    const chain = middlewares.map((middleware) => middleware(store));
+    let oldDispatch = store.dispatch;
+    chain
+        .reverse()
+        .forEach((middleware) => (oldDispatch = middleware(oldDispatch)));
+    store.dispatch = oldDispatch;
+    return store;
+    };
 };
 
 const newStore = applyMiddleware([catchMiddleware, loggerMiddleware])(
-  createStore
+    createStore
 )(rootReducer);
 ```
 
@@ -326,22 +325,22 @@ Redux提供了`applyMiddleware`来加载`middleware`,`applyMiddleware`接受三�
 ```jsx
 export default const applyMiddleware = (...middlewares) => createStore => (reducer, ...args) => {
   //由createStore和reducer创建store
-  const store = createStore(reducer, ...args)
-  let dispatch = store.dispatch
-  var middlewareAPI = {
-    getState: store.getState,
-    dispatch: (action, ...args) => dispatch(action, ...args)
-  }
-  //把getState/dispatch传给middleware，
-  //map让每个middleware获得了middlewareAPI参数
-  //形成一个chain匿名函数数组[f1,f2,f3...fn]
-  const chain = middlewares.map(middleware => middleware(middlewareAPI))
-  //dispatch=f1(f2(f3(store.dispatch)))，把所有  的middleware串联起来
-  dispatch = compose(...chain)(store.dispatch)
-  return {
-    ...store,
-    dispatch
-  }
+    const store = createStore(reducer, ...args)
+    let dispatch = store.dispatch
+    var middlewareAPI = {
+        getState: store.getState,
+        dispatch: (action, ...args) => dispatch(action, ...args)
+    }
+    //把getState/dispatch传给middleware，
+    //map让每个middleware获得了middlewareAPI参数
+    //形成一个chain匿名函数数组[f1,f2,f3...fn]
+    const chain = middlewares.map(middleware => middleware(middlewareAPI))
+    //dispatch=f1(f2(f3(store.dispatch)))，把所有  的middleware串联起来
+    dispatch = compose(...chain)(store.dispatch)
+    return {
+        ...store,
+        dispatch
+    }
 }
 ```
 

@@ -22,7 +22,7 @@ export class TodoList {
 }
 ```
 
-Mobx 借助于装饰器来实现，是的代码更加简洁。使用了可观察对象，Mobx 可以直接修改状态，不用像 Redux 那样写 actions/reducers()。Redux 是遵循 setState 的流程，MobX就是干掉了 setState 的机制
+Mobx 借助于装饰器来实现，是的代码更加简洁。使用了可观察对象，Mobx 可以直接修改状态，不用像 Redux 那样写 actions/reducers。Redux 是遵循 setState 的流程，MobX就是干掉了 setState 的机制
 
 通过响应式编程使得状态管理变得简单和可扩展，任何源自应用状态的东西都应该自动的获得
 
@@ -96,11 +96,11 @@ export class TodoList {
 
 ### action
 
-动作是任何用来修改状态的东西。MobX 中的 action 不像 redux 中是必需的，把一些修改state 的操作都规范使用 action 做标注。
+动作是任何用来修改状态的东西。MobX 中的 action 不像 redux 中是必需的，把一些修改 state 的操作都规范使用 action 做标注。
 
 在 MobX 中可以随意更改`todos.push({title:'coding', done: false})`，state 也是可以有作用的，但是这样杂乱无章不好定位是哪里触发了 state 的变化，建议在任何更新`observable`或者有副作用的函数上使用 actions。
 
-在严格模式`useStrict(true)`下，强制使用action
+在严格模式`useStrict(true)`下，强制使用 action
 
 ```jsx
 // 非action使用
@@ -126,10 +126,10 @@ class TodoList {
 
 ### Reactions
 
-计算值computed是自动响应状态变化的值。反应是自动响应状态变化是的副作用，反应可以确保相关状态变化时指定的副作用执行。
+计算值 computed 是自动响应状态变化的值。反应是自动响应状态变化是的副作用，反应可以确保相关状态变化时指定的副作用执行。
 
 1. autorun
-    
+
     `autorun`负责运行所提供的`sideEffect`并追踪在`sideEffect`运行期间访问过的`observable`的状态
 
     接受一个函数`sideEffect`，当这个函数中依赖的可观察属性发生变化的时候，`autorun`里面的函数就会被触发。除此之外，`autorun`里面的函数在第一次会立即执行一次。
@@ -259,7 +259,7 @@ class Watcher {
 }
 ```
 
-实现一个简单的装饰器，需要拦截我们属性的get/set方法，并且使用Object.defineProperty进行深度拦截
+实现一个简单的装饰器，需要拦截我们属性的 get/set 方法，并且使用 Object.defineProperty 进行深度拦截
 
 ```jsx
 export function observable(target: any, name: any, descriptor: { initializer: () => any; }) {
@@ -304,7 +304,7 @@ function createDeepWatcher(target: any) {
 
 ### autorun
 
-前面说到 autorun 会立即执行一次，并且会将函数收集起来，存储到对应的`observable.id`的watchers中。autorun 实现了收集依赖，执行对应函数。再执行对应函数的时候，会调用到对应`observable`对象的`get`方法，来收集依赖
+前面说到 autorun 会立即执行一次，并且会将函数收集起来，存储到对应的`observable.id`的 watchers 中。autorun 实现了收集依赖，执行对应函数。再执行对应函数的时候，会调用到对应`observable`对象的`get`方法，来收集依赖
 
 ```jsx
 export default function autorun(handler) {
@@ -318,8 +318,8 @@ export default function autorun(handler) {
 
 - beginCollect: 标识开始收集依赖，将依赖函数存到一个类全局变量中
 - collect(id): 调用`get`方法时，将依赖函数放到存入到对应 id 的依赖数组中
-- notify: 当执行`set`的时候，根据 id 来执行数组中的函数依赖
-- endCollect: 清除刚开始的函数依赖，以便于下一次收集
+- notify: 当执行`set`的时候，根据 id 来执行数组中的函数依赖
+- endCollect: 清除刚开始的函数依赖，以便于下一次收集
 
 ```jsx
 class DependenceManager {
@@ -350,17 +350,15 @@ class DependenceManager {
 }
 ```
 
- 
-
 一个简单的 Mobx 框架都搭建好了~
 
 ### computed
 
-computed 的三个特点: 
+computed 的三个特点:
 
 - computed 方法是一个 get 方法
 - computed 会根据依赖的属性重新计算值
-- 依赖 computed 的函数也会被重新执行
+- 依赖 computed 的函数也会被重新执行
 
 发现 computed 的实现大致和 observable 相似，从以上特点可以推断出 computed 需要两次收集依赖，一次是收集 computed 所依赖的属性，一次是依赖 computed 的函数
 
@@ -464,7 +462,7 @@ export function observer(target: any) {
     ![mobx1](https://user-images.githubusercontent.com/38368040/167146604-eb1b5ef5-278d-482a-b4a3-dd3d40d71c38.png)
 
 2. 修改数据的方式
-    - 他们修改状态的方式是不同的，Redux 每一次都返回了新的 state；Mobx 每次修改的都是同一个状态对象，基于响应式原理，`get`时收集依赖，`set`时通知所有的依赖
+    - 他们修改状态的方式是不同的，Redux 每一次都返回了新的 state。Mobx 每次修改的都是同一个状态对象，基于响应式原理，`get`时收集依赖，`set`时通知所有的依赖
 
     - 当 state 发生改变时，Redux 会通知所有使用 connect 包裹的组件；Mobx 由于收集了每个属性的依赖，能够精准通知
 

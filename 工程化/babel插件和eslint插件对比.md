@@ -4,13 +4,13 @@ babel 和 eslint 都是我们项目中常用的工具，两者都是基于 AST �
 
 ## babel插件
 
-babel 的编译流程分为`parse → transform → generate`三步，可以指定插件，在遍历 AST 的时候调用visitor，对某些节点做处理
+babel 的编译流程分为`parse → transform → generate`三步，可以指定插件，在遍历 AST 的时候调用 visitor，对某些节点做处理
 
 ### babel插件示例—no-function-assign-plugin
 
 在之前的 babel 插件中，有讲过这个示例
 
-实现思路是:  根据赋值语句去查找作用域，左边的引用是否是一个函数
+实现思路是: 根据赋值语句去查找作用域，左边的引用是否是一个函数
 
 - 当我们处理赋值语句`AssignmentExpression`，判断 left 的引用是否是一个函数
 - 使用`path.scope.getBinding`，从作用域中查找`binding`
@@ -123,7 +123,7 @@ module.exports = {
     },
 };
 ```
-但是上述代码随着 ES6 结构语法的出现，就不能够实现我们的效果，`[foo] = bar; function foo(){}`，对于这个代码来说，赋值语句的左边是`[foo]`，也就是一个 ArrayPattern 节点，根本不会存在 name 值，所以`checkIdentifierIsFunction`的返回将一直是false，所以根本不会报错(上面babel 实现的插件也会有这个问题)。
+但是上述代码随着 ES6 结构语法的出现，就不能够实现我们的效果，`[foo] = bar; function foo(){}`，对于这个代码来说，赋值语句的左边是`[foo]`，也就是一个 ArrayPattern 节点，根本不会存在 name 值，所以`checkIdentifierIsFunction`的返回将一直是 false，所以根本不会报错(上面 babel 实现的插件也会有这个问题)。
 
 或许你会问，是不是可以再多加一层的判断对 ArrayPattern 节点做一个特殊处理，比如下面这样
 
@@ -208,7 +208,7 @@ module.exports = {
 };
 ```
 
-通过`context.getDeclaredVariables`拿到当前node的variable，再去遍历每一个 variable 的引用中是否有函数
+通过`context.getDeclaredVariables`拿到当前 node 的 variable，再去遍历每一个 variable 的引用中是否有函数
 
 #### 项目中引入插件
 
@@ -241,7 +241,7 @@ module.exports = {
 ![sourceCode](https://user-images.githubusercontent.com/38368040/169676114-74a8eb9f-8424-4ac8-ae2e-0c4bdc5b6e8f.png)
 ![token](https://user-images.githubusercontent.com/38368040/169676121-32809119-21da-4318-a837-e8cffa0138be.png)
 
-token 中包含了每一个单词的位置信息，sourceCode 提供了通过 node 获取对应token
+token 中包含了每一个单词的位置信息，sourceCode 提供了通过 node 获取对应 token
 
 ```jsx
 //块级node开始的token，也就是红色部分
@@ -255,37 +255,37 @@ const beforeFirstToken = sourceCode.getTokenBefore(node);
 
 ```jsx
 module.exports = {
-  create(context) {
-    const sourceCode = context.getSourceCode();
-    return {
-      BlockStatement(node) {
-        //块级node开始的token
-        const firstToken = sourceCode.getFirstToken(node);
-        //块级node前一个token
-        const beforeFirstToken = sourceCode.getTokenBefore(node);
-        if (firstToken.loc.start.line !== beforeFirstToken.loc.start.line) {
-          return context.report({
-            node,
-            loc: firstToken.loc,
-            message: '大括号不需要换行',
-            fix: fixer => {
-              return fixer.replaceTextRange([beforeFirstToken.range[1], firstToken.range[0]], ' ');
+    create(context) {
+        const sourceCode = context.getSourceCode();
+        return {
+            BlockStatement(node) {
+                //块级node开始的token
+                const firstToken = sourceCode.getFirstToken(node);
+                //块级node前一个token
+                const beforeFirstToken = sourceCode.getTokenBefore(node);
+                if (firstToken.loc.start.line !== beforeFirstToken.loc.start.line) {
+                    return context.report({
+                        node,
+                        loc: firstToken.loc,
+                        message: '大括号不需要换行',
+                        fix: fixer => {
+                            return fixer.replaceTextRange([beforeFirstToken.range[1], firstToken.range[0]], ' ');
+                        }
+                    });
+                }
+                if (firstToken.range[0] - 1 !== beforeFirstToken.range[1]) {
+                    return context.report({
+                        node,
+                        loc: firstToken.loc,
+                        message: '大括号前需要空格',
+                        fix: fixer => {
+                            return fixer.replaceTextRange([beforeFirstToken.range[1], firstToken.range[0]], ' ');
+                        }
+                    });
+                }
             }
-          });
-        }
-        if (firstToken.range[0] - 1 !== beforeFirstToken.range[1]) {
-          return context.report({
-            node,
-            loc: firstToken.loc,
-            message: '大括号前需要空格',
-            fix: fixer => {
-              return fixer.replaceTextRange([beforeFirstToken.range[1], firstToken.range[0]], ' ');
-            }
-          });
-        }
-      }
-    };
-  },
+        };
+    },
 };
 ```
 

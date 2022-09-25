@@ -71,7 +71,7 @@ const fn = () => {
 
 ### 插件(plugins)
 
-我们想将箭头函数转为ES5函数，只需要提供一个转换箭头函数的插件。
+我们想将箭头函数转为 ES5 函数，只需要提供一个转换箭头函数的插件。
 
 在项目目录下新建`.babelrc`文件，添加上如下配置
 
@@ -87,13 +87,13 @@ const fn = () => {
 
 ```jsx
 const fn = function () {
-  console.log(111);
+    console.log(111);
 };
 
 // ===== 编译后的结果 ===== //
 
 var fn = function fn() {
-  console.log(111);
+    console.log(111);
 };
 ```
 
@@ -108,7 +108,7 @@ var fn = function fn() {
 }
 ```
 
-插件是有一个执行顺序的，插件是从上往下执行的，所以 Babel 在遍历AST时会先调用`@babel/plugin-transform-arrow-functions`定义的转换方法，然后再调用`@babel/plugin-transform-destructuring`
+插件是有一个执行顺序的，插件是从上往下执行的，所以 Babel 在遍历 AST 时会先调用`@babel/plugin-transform-arrow-functions`定义的转换方法，然后再调用`@babel/plugin-transform-destructuring`
 
 🤔 发现问题所在，如果我们需要转换的语法很多，那岂不是需要手动配置很多插件，实在繁琐。
 
@@ -133,18 +133,17 @@ preset 的出现就是为了解决上述问题。通过添加/创建一个 prese
 #### 一些过时的preset
 
 1. @babel/preset-stage-xxx
-    
-    stage-xxx是不同阶段语法提案的转码规则而产生的预设，随着被批准为 ES 新版本的组成部分而进行相应的改变
-    
+
+    stage-xxx 是不同阶段语法提案的转码规则而产生的预设，随着被批准为 ES 新版本的组成部分而进行相应的改变
+
     - [stage-0](https://link.juejin.cn/?target=https%3A%2F%2Fwww.babeljs.cn%2Fdocs%2Fbabel-preset-stage-0) - 设想(Strawman): 只是一个想法，可能有 Babel 插件，stage-0 的功能范围最广大，包含 stage-1 , stage-2 以及 stage-3 的所有功能
     - [stage-1](https://link.juejin.cn/?target=https%3A%2F%2Fwww.babeljs.cn%2Fdocs%2Fbabel-preset-stage-1) - 建议(Proposal): 这是值得跟进的
     - [stage-2](https://link.juejin.cn/?target=https%3A%2F%2Fwww.babeljs.cn%2Fdocs%2Fbabel-preset-stage-2) - 草案(Draft): 初始规范
     - [stage-3](https://link.juejin.cn/?target=https%3A%2F%2Fwww.babeljs.cn%2Fdocs%2Fbabel-preset-stage-3) - 候选(Candidate): 完成规范并在浏览器上初步实现
     - stage-4 - 完成(Finished): 将添加到下一个年度版本发布中
 2. @babel/preset-es2015
-    
+
     ES 的标准一年一个版本，意味着 babel 插件需要去实时跟进，es6 语法采用`@babel/preset-es2015`，es7 语法就需要引入`@babel/preset-es2016`，如果是一些还未加入标准的语法就需要用上述讲的 stage0/stage1 等
-    
 
 上述讲的 preset-stage-xxx/preset-es20xx 都是 babel6 的产物，依旧会发现一些问题，preset 难以维护，ES 的标准变化比较快，意味着 stage-xxx 变得也很快。如果目标环境已经支持了 ES6+ 特性，那我们就不用做转换了。
 
@@ -152,9 +151,9 @@ preset 的出现就是为了解决上述问题。通过添加/创建一个 prese
 
 babel7 中，淘汰了上述的preset-es20xx，开始推行 preset/env
 
-preset-env 可以使用es6+语法去写代码，并且只转换需要转换的代码。
+preset-env 可以使用 es6+ 语法去写代码，并且只转换需要转换的代码。
 
-默认情况下，preset-env 什么都不需要配置，它会默认转换所有的es6+的代码。提供了 targets 配置项制定运行环境。
+默认情况下，preset-env 什么都不需要配置，它会默认转换所有的 es6+ 的代码。提供了 targets 配置项制定运行环境。
 
 修改 .babelrc 文件，修改为如下配置
 
@@ -189,17 +188,17 @@ var arr = [1, 2, 3, 4];
 var arr1 = [].concat(arr);
 arr.includes(1);
 var p = new Promise(function (resolve, reject) {
-  resolve("FBB");
+    resolve("FBB");
 });   // includes/Promise竟然没有被转换？？？？
 ```
 
-🤔 ES6 增加的内容可以分为语法和 api 两个部分。新语法比如箭头函数/解构/class等，新的api比如Set/Map/Promise/Array原型链上等。
+🤔 ES6 增加的内容可以分为语法和 api 两个部分。新语法比如箭头函数/解构/ class 等，新的 api 比如 Set/Map/Promise/Array 原型链上等。
 
-语法转换只是将高版本语法转为低版本的，但是新的内置函数/实例方法等无法转换。所以这时polyfill出现了。
+语法转换只是将高版本语法转为低版本的，但是新的内置函数/实例方法等无法转换。所以这时 polyfill 出现了。
 
 ### @babel/polyfill
 
-polyfill是垫片的意思，所谓垫片就是抹平不同浏览器或者不同环境下的差异，让新的内置函数、实例方法等在低版本浏览器中也可以使用
+polyfill 是垫片的意思，所谓垫片就是抹平不同浏览器或者不同环境下的差异，让新的内置函数、实例方法等在低版本浏览器中也可以使用
 
 为我们的代码添加 @babel/polyfill，直接在 src/index.js 前引入该包
 
@@ -223,23 +222,23 @@ var arr = [1, 2, 3, 4];
 var arr1 = [].concat(arr);
 arr.includes(1);
 var p = new Promise(function (resolve, reject) {
-  resolve("FBB");
+    resolve("FBB");
 });
 ```
 
 经过 babel 编译后的内容，其实也是引入了 @babel/polyfill 的包，这个时候采用的是全量引入，不管有无使用的 API 都会被引入
 
-🤔 那其实我们代码只需要 Promise 和 includes 的polyfill，那有没有一种按需加载的功能？当然有，babel不会连这么蠢的问题都不解决。
+🤔 那其实我们代码只需要 Promise 和 includes 的polyfill，那有没有一种按需加载的功能？当然有，babel 不会连这么蠢的问题都不解决。
 
 #### useBuiltIns
 
-在回到上一节所讲的 @babel/preset-env，我们刚刚提到了 target配置项是用于标识目标环境。useBuiltIns 该配置是用于做 polyfill 的，我们在 .babelrc 中加入该配置项，babel 编译时就会自动进行 polyfill，不需要我们在手动引入
+在回到上一节所讲的 @babel/preset-env，我们刚刚提到了 target 配置项是用于标识目标环境。useBuiltIns 该配置是用于做 polyfill 的，我们在 .babelrc 中加入该配置项，babel 编译时就会自动进行 polyfill，不需要我们在手动引入
 
 useBuiltIns 的参数:
 
 - false: 不会对 polyfill 做操作，引入 @babel/polyfill 之后会全量引入
 - usage: 会根据配置的目标环境的兼容性以及代码中使用的 API 来进行 polyfill，实现按需加载
-- entry: 会根据配置的浏览器兼容，引入浏览器不兼容的 polyfill，需要在入口文件手动添加`import '@babel/polyfill'`。如果指定的`"corejs": "3"`，则需要引入`import 'core-js/stable'; import 'regenerator-runtime/runtime'`
+- entry: 会根据配置的浏览器兼容，引入浏览器不兼容的 polyfill，需要在入口文件手动添加`import '@babel/polyfill'`。如果指定的`"corejs": "3"`，则需要引入`import 'core-js/stable'; import 'regenerator-runtime/runtime'`
 
     > 💡[core-js](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fzloirock%2Fcore-js)是JavaScript 的模块化标准库，包含 `Promise/Symbol/Iterator` 和许多其他的特性，它可以让你仅加载必需的功能。core-js@2.0的版本已经之冻结，所有的新特性只会添加到3.0的分支中
 
@@ -284,11 +283,11 @@ var arr = [1, 2, 3, 4];
 var arr1 = [].concat(arr);
 arr.includes(1);
 var p = new Promise(function (resolve, reject) {
-  resolve("FBB");
+    resolve("FBB");
 });
 ```
 
-🤔 @babel/preset-env 是如何实现按需加载的呢？
+🤔 @babel/preset-env 是如何实现按需加载的呢？
 
 首先我们在 @babel/preset-env 的 target 配置项中，可以设置目标环境。在上面的示例中我们设置的环境是 ie10+，targets 是 [browserlist](https://github.com/browserslist/browserslist) 的查询字符串，能够获得项目中的目标浏览器环境信息
 
@@ -319,18 +318,18 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 var Person = /*#__PURE__*/function () {
-  function Person() {
-    _classCallCheck(this, Person);
-  }
-
-  _createClass(Person, [{
-    key: "say",
-    value: function say(word) {
-      console.log(":::", word);
+    function Person() {
+        _classCallCheck(this, Person);
     }
-  }]);
 
-  return Person;
+    _createClass(Person, [{
+        key: "say",
+        value: function say(word) {
+        console.log(":::", word);
+        }
+    }]);
+
+    return Person;
 }();
 ```
 
@@ -374,16 +373,16 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
 var Person = /*#__PURE__*/function () {
-  function Person() {
-    (0, _classCallCheck2.default)(this, Person);
-  }
-
-  (0, _createClass2.default)(Person, [{
-    key: "say",
-    value: function say(word) {
-      console.log(":::", word);
+    function Person() {
+        (0, _classCallCheck2.default)(this, Person);
     }
-  }]);
+
+    (0, _createClass2.default)(Person, [{
+        key: "say",
+        value: function say(word) {
+        console.log(":::", word);
+        }
+    }]);
   return Person;
 }();
 ```
@@ -414,7 +413,7 @@ var arr = [1, 2, 3, 4];
 var arr1 = [].concat(arr);
 arr.includes(1);
 var p = new Promise(function (resolve, reject) {
-  resolve("FBB");
+    resolve("FBB");
 });
 ```
 
@@ -445,7 +444,7 @@ var p = new Promise(function (resolve, reject) {
 }
 ```
 
-重新编译之后会得到如下结果，发现最终转换后的文件不会再出现 polyfill 的 require 方法了。可以看出，没有直接去修改`Array.prototype`，或者是新增`Promise`方法，而是将方法重写成为_promise/_includes，避免了全局污染
+重新编译之后会得到如下结果，发现最终转换后的文件不会再出现 polyfill 的 require 方法了。可以看出，没有直接去修改`Array.prototype`，或者是新增`Promise`方法，而是将方法重写成为 _promise/_includes，避免了全局污染
 
 ```jsx
 "use strict";
@@ -464,7 +463,7 @@ var arr = [1, 2, 3, 4];
 var arr1 = (0, _concat.default)(_context = []).call(_context, arr);
 (0, _includes.default)(arr).call(arr, 1);
 var p = new _promise.default(function (resolve, reject) {
-  resolve("FBB");
+    resolve("FBB");
 });
 
 ```

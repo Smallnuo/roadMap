@@ -38,20 +38,20 @@ window.addEventListener("DOMContentLoaded", onLoad);
 window.addEventListener("hashchange", onHashChange);
 // 路由变化时，根据路由渲染对应 UI
 function onHashChange() {
-  switch (location.hash) {
-    case "#/home":
-      routerView.innerHTML = "This is Home";
-      return;
-    case "#/about":
-      routerView.innerHTML = "This is About";
-      return;
-    case "#/list":
-      routerView.innerHTML = "This is List";
-      return;
-    default:
-      routerView.innerHTML = "Not Found";
-      return;
-  }
+    switch (location.hash) {
+        case "#/home":
+            routerView.innerHTML = "This is Home";
+            return;
+        case "#/about":
+            routerView.innerHTML = "This is About";
+            return;
+        case "#/list":
+            routerView.innerHTML = "This is List";
+            return;
+        default:
+            routerView.innerHTML = "Not Found";
+            return;
+    }
 }
 ```
 
@@ -66,31 +66,31 @@ function onHashChange() {
 
 ```jsx
 var _wr = function (type) {
-  var orig = history[type];
-  return function () {
-    var e = new Event(type);
-    e.arguments = arguments;
-    var rv = orig.apply(this, arguments);
-    window.dispatchEvent(e);
-    return rv;
-  };
+    var orig = history[type];
+    return function () {
+        var e = new Event(type);
+        e.arguments = arguments;
+        var rv = orig.apply(this, arguments);
+        window.dispatchEvent(e);
+        return rv;
+    };
 };
 // 重写pushstate事件
 history.pushState = _wr("pushstate");
 
 function onLoad() {
-  routerView = document.querySelector("#routeView");
-  onPopState();
-  // 拦截 <a> 标签点击事件默认行为
-  // 点击时使用 pushState 修改 URL并更新手动 UI，从而实现点击链接更新 URL 和 UI 的效果。
-  var linkList = document.querySelectorAll("a[href]");
-  linkList.forEach((el) =>
-    el.addEventListener("click", function (e) {
-      e.preventDefault();
-      history.pushState(null, "", el.getAttribute("href"));
-      onPopState();
-    })
-  );
+    routerView = document.querySelector("#routeView");
+    onPopState();
+    // 拦截 <a> 标签点击事件默认行为
+    // 点击时使用 pushState 修改 URL并更新手动 UI，从而实现点击链接更新 URL 和 UI 的效果。
+    var linkList = document.querySelectorAll("a[href]");
+    linkList.forEach((el) =>
+        el.addEventListener("click", function (e) {
+            e.preventDefault();
+            history.pushState(null, "", el.getAttribute("href"));
+            onPopState();
+        })
+    );
 }
 // 监听pushstate方法
 window.addEventListener("pushstate", onPopState);
@@ -100,20 +100,20 @@ window.addEventListener("DOMContentLoaded", onLoad);
 window.addEventListener("popstate", onPopState);
 // 路由变化时，根据路由渲染对应 UI
 function onPopState() {
-  switch (location.pathname) {
-    case "/home":
-      routerView.innerHTML = "This is Home";
-      return;
-    case "/about":
-      routerView.innerHTML = "This is About";
-      return;
-    case "/list":
-      routerView.innerHTML = "This is List";
-      return;
-    default:
-      routerView.innerHTML = "Not Found";
-      return;
-  }
+    switch (location.pathname) {
+        case "/home":
+            routerView.innerHTML = "This is Home";
+            return;
+        case "/about":
+            routerView.innerHTML = "This is About";
+            return;
+        case "/list":
+            routerView.innerHTML = "This is List";
+            return;
+        default:
+            routerView.innerHTML = "Not Found";
+            return;
+    }
 }
 ```
 
@@ -143,19 +143,19 @@ function onPopState() {
 ```jsx
 // 创建和管理listeners的方法
 export const EventEmitter = () => {
-  const events = [];
+    const events = [];
 
-  return {
-    subscribe(fn) {
-      events.push(fn);
-      return function () {
-        events = events.filter((handler) => handler !== fn);
-      };
-    },
-    emit(arg) {
-      events.forEach((fn) => fn && fn(arg));
-    }
-  };
+    return {
+        subscribe(fn) {
+            events.push(fn);
+            return function () {
+                events = events.filter((handler) => handler !== fn);
+            };
+        },
+        emit(arg) {
+            events.forEach((fn) => fn && fn(arg));
+        }
+    };
 };
 ```
 
@@ -163,40 +163,40 @@ export const EventEmitter = () => {
 
 ```jsx
 const createBrowserHistory = () => {
-  const EventBus = EventEmitter(); //{subscribe,emit}
-  // 初始化location
-  let location: ILocation = {
-    pathname: window.location.pathname || "/"
-  };
-  // 路由变化时的回调
-  const handlePop = function () {
-    const currentLocation = {
-      pathname: window.location.pathname
+    const EventBus = EventEmitter(); //{subscribe,emit}
+    // 初始化location
+    let location: ILocation = {
+        pathname: window.location.pathname || "/"
     };
-    EventBus.emit(currentLocation); // 路由变化时执行回调
-  };
-  // 定义history.push方法
-  const push = (path) => {
-    const history = window.history;
-    // 为了保持state栈的一致性
-    history.pushState(null, "", path);
-    // 由于push并不触发popstate，我们需要手动调用回调函数
-    location = { pathname: path };
-    EventBus.emit(location);
-  };
+    // 路由变化时的回调
+    const handlePop = function () {
+        const currentLocation = {
+            pathname: window.location.pathname
+        };
+        EventBus.emit(currentLocation); // 路由变化时执行回调
+    };
+    // 定义history.push方法
+    const push = (path) => {
+        const history = window.history;
+        // 为了保持state栈的一致性
+        history.pushState(null, "", path);
+        // 由于push并不触发popstate，我们需要手动调用回调函数
+        location = { pathname: path };
+        EventBus.emit(location);
+    };
 
-  const listen = (listener) => EventBus.subscribe(listener);
+    const listen = (listener) => EventBus.subscribe(listener);
 
-  // 处理浏览器的前进后退
-  window.addEventListener("popstate", handlePop);
+    // 处理浏览器的前进后退
+    window.addEventListener("popstate", handlePop);
 
-  // 返回history
-  const history: IHistory = {
-    location,
-    listen,
-    push
-  };
-  return history;
+    // 返回history
+    const history: IHistory = {
+        location,
+        listen,
+        push
+    };
+    return history;
 };
 ```
 
@@ -206,34 +206,34 @@ const createBrowserHistory = () => {
 
 ```jsx
 const createHashHistory = () => {
-  const EventBus = EventEmitter();
-  const location: ILocation = {
-    pathname: window.location.hash.slice(1) || "/"
-  };
-
-  // 路由变化时的回调
-  const handlePop = () => {
-    const currentLocation = {
-      pathname: window.location.hash.slice(1)
+    const EventBus = EventEmitter();
+    const location: ILocation = {
+        pathname: window.location.hash.slice(1) || "/"
     };
-    EventBus.emit(currentLocation); // 路由变化时执行回调
-  };
 
-  // 不用手动执行回调，因为hash改变会触发hashchange事件
-  const push = (path: string) => (window.location.hash = path);
+    // 路由变化时的回调
+    const handlePop = () => {
+        const currentLocation = {
+            pathname: window.location.hash.slice(1)
+        };
+        EventBus.emit(currentLocation); // 路由变化时执行回调
+    };
 
-  const listen = (listener: Function) => EventBus.subscribe(listener);
+    // 不用手动执行回调，因为hash改变会触发hashchange事件
+    const push = (path: string) => (window.location.hash = path);
 
-  // 监听hashchange事件
-  window.addEventListener("hashchange", handlePop);
+    const listen = (listener: Function) => EventBus.subscribe(listener);
 
-  // 返回的history上有个listen方法
-  const history: IHistory = {
-    location,
-    listen,
-    push
-  };
-  return history;
+     // 监听hashchange事件
+    window.addEventListener("hashchange", handlePop);
+
+    // 返回的history上有个listen方法
+    const history: IHistory = {
+        location,
+        listen,
+        push
+    };
+    return history;
 };
 ```
 
@@ -249,34 +249,31 @@ Router 接受一个 history 属性，用`history.listen`创建监听者，使用
 
 ```jsx
 export default class Router extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      location: props.history.location // 将history的location挂载到state上
-    };
-		// 之所以要在这里做监听是因为还没 didMount
-    this.unlisten = props.history.listen((location) => {
-      this.setState({ location });
-    });
-  }
-  componentDidMount() {}
-  componentWillUnmount() {
-    this.unlisten();
-  }
-  render() {
-    const { history, children } = this.props;
-    const { location } = this.state;
-    return (
-      <RouterContext.Provider
-        value={{
-          history,
-          location
-        }}
-      >
-        {children}
-      </RouterContext.Provider>
-    );
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            location: props.history.location // 将history的location挂载到state上
+        };
+            // 之所以要在这里做监听是因为还没 didMount
+        this.unlisten = props.history.listen((location) => {
+            this.setState({ location });
+        });
+    }
+    componentDidMount() {}
+    componentWillUnmount() {
+        this.unlisten();
+    }
+    render() {
+        const { history, children } = this.props;
+        const { location } = this.state;
+        return (
+            <RouterContext.Provider
+                value={{ history, location }}
+            >
+                {children}
+            </RouterContext.Provider>
+        );
+    }
 }
 ```
 
@@ -290,10 +287,10 @@ export default class Router extends React.Component {
 
 ```jsx
 class BrowserRouter extends React.Component {
-  history = createBrowserHistory();
-  render() {
-    return <Router history={this.history} children={this.props.children} />;
-  }
+    history = createBrowserHistory();
+    render() {
+        return <Router history={this.history} children={this.props.children} />;
+    }
 }
 ```
 
@@ -301,10 +298,10 @@ class BrowserRouter extends React.Component {
 
 ```jsx
 class HashRouter extends React.Component {
-  history = createHashHistory();
-  render() {
-    return <Router history={this.history} children={this.props.children} />;
-  }
+    history = createHashHistory();
+    render() {
+        return <Router history={this.history} children={this.props.children} />;
+    }
 }
 ```
 
@@ -320,29 +317,29 @@ v4/v5三个优先级不同
 
 ```jsx
 export default class Route extends React.Component<IProps> {
-  render() {
-    return (
-      <RouterContext.Consumer>
-        {(context) => {
-          const pathname = context.location.pathname;
-          const {
-            path,
-            component: Component,
-            exact = false,
-            render,
-            children
-          } = this.props;
-          const props = { ...context };
-          const reg = pathToRegExp(path, [], { end: exact });
-          // 判断url是否匹配
-          if (!reg.test(pathname)) return null;
-          if (children) return children;
-          if (Component) return <Component {...props} />;
-          if (render) return render();
-        }}
-      </RouterContext.Consumer>
-    );
-  }
+    render() {
+        return (
+        <RouterContext.Consumer>
+            {(context) => {
+                const pathname = context.location.pathname;
+                const {
+                    path,
+                    component: Component,
+                    exact = false,
+                    render,
+                    children
+                } = this.props;
+                const props = { ...context };
+                const reg = pathToRegExp(path, [], { end: exact });
+                // 判断url是否匹配
+                if (!reg.test(pathname)) return null;
+                if (children) return children;
+                if (Component) return <Component {...props} />;
+                if (render) return render();
+            }}
+        </RouterContext.Consumer>
+        );
+    }
 }
 ```
 
@@ -354,27 +351,27 @@ export default class Route extends React.Component<IProps> {
 
 ```jsx
 export default class Link extends React.Component<IProps> {
-  render() {
-    const { to, children } = this.props;
-    return (
-      <RouterContext.Consumer>
-        {(context) => {
-          return (
-            <a
-              href={to}
-              onClick={(event) => {
-                // 阻止a标签的默认行为
-                event.preventDefault();
-                context.history.push(to);
-              }}
-            >
-              {children}
-            </a>
-          );
-        }}
-      </RouterContext.Consumer>
-    );
-  }
+    render() {
+        const { to, children } = this.props;
+        return (
+            <RouterContext.Consumer>
+                {(context) => {
+                    return (
+                        <a
+                            href={to}
+                            onClick={(event) => {
+                                // 阻止a标签的默认行为
+                                event.preventDefault();
+                                context.history.push(to);
+                            }}
+                        >
+                            {children}
+                        </a>
+                    );
+                }}
+            </RouterContext.Consumer>
+        );
+    }
 }
 ```
 
@@ -390,28 +387,28 @@ Route 组件的功能是只要 path 匹配上当前路由就渲染组件，也�
 
 ```jsx
 export default class Switch extends React.Component {
-  render() {
-    return (
-      <RouterContext.Consumer>
-        {(context) => {
-          const location = context.location;
-          let element, match; // 两个变量记录第一次匹配上的子元素和match属性
-          React.Children.forEach(this.props.children, (child) => {
-            // 先检测下match是否已经匹配到了, 如果已经匹配过了，直接跳过
-            if (!match && React.isValidElement(child)) {
-              element = child;
-              const { path, exact } = child.props;
-              const reg = pathToRegExp(path, [], { end: exact });
-              if (reg.test(location.pathname)) match = true;
-            }
-          });
-          // <Switch>组件的返回值只是匹配上元素的拷贝，其他元素被忽略了
-          // 如果一个都没匹配上，返回null
-          return match ? React.cloneElement(element, { location }) : null;
-        }}
-      </RouterContext.Consumer>
-    );
-  }
+    render() {
+        return (
+        <RouterContext.Consumer>
+            {(context) => {
+                const location = context.location;
+                let element, match; // 两个变量记录第一次匹配上的子元素和match属性
+                React.Children.forEach(this.props.children, (child) => {
+                    // 先检测下match是否已经匹配到了, 如果已经匹配过了，直接跳过
+                    if (!match && React.isValidElement(child)) {
+                        element = child;
+                        const { path, exact } = child.props;
+                        const reg = pathToRegExp(path, [], { end: exact });
+                        if (reg.test(location.pathname)) match = true;
+                    }
+                });
+                // <Switch>组件的返回值只是匹配上元素的拷贝，其他元素被忽略了
+                // 如果一个都没匹配上，返回null
+                return match ? React.cloneElement(element, { location }) : null;
+            }}
+        </RouterContext.Consumer>
+        );
+    }
 }
 ```
 
