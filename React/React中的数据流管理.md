@@ -123,7 +123,7 @@ react-redux 是 Redux 提供的 react 绑定，辅助在 react 项目中使用 r
 
 Provider 做了些啥？
 
--   创建一个`contextValue`包含`redux`传入的`store`和根据`store`创建出的`subscription`，发布订阅均为`subscription`做的
+-   创建一个`contextValue`包含`redux`传入的`store`
 -   通过`context`上下文把`contextValue`传递子组件
 
 #### Connect

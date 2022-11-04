@@ -24,9 +24,7 @@ export class TodoList {
 
 Mobx 借助于装饰器来实现，是的代码更加简洁。使用了可观察对象，Mobx 可以直接修改状态，不用像 Redux 那样写 actions/reducers。Redux 是遵循 setState 的流程，MobX就是干掉了 setState 的机制
 
-通过响应式编程使得状态管理变得简单和可扩展，任何源自应用状态的东西都应该自动的获得
-
-MobX v5 版本利用 ES6 的`proxy`来追踪属性，以前的旧版本通过`Object.defineProperty`实现的。通过隐式订阅，自动追踪被监听的对象变化
+通过响应式编程使得状态管理变得简单和可扩展。MobX v5 版本利用 ES6 的`proxy`来追踪属性，以前的旧版本通过`Object.defineProperty`实现的。通过隐式订阅，自动追踪被监听的对象变化
 
 Mobx 的执行流程，一张官网结合上述例子的图
 
@@ -35,10 +33,13 @@ Mobx 的执行流程，一张官网结合上述例子的图
 MobX将应用变为响应式可归纳为下面三个步骤
 
 1. 定义状态并使其可观察
+
     使用`observable`对存储的数据结构成为可观察状态
 2. 创建视图以响应状态的变化
+
     使用`observer`来监听视图，如果用到的数据发生改变视图会自动更新
 3. 更改状态
+
     使用`action`来定义修改状态的方法
 
 ## Mobx核心概念
@@ -98,7 +99,7 @@ export class TodoList {
 
 动作是任何用来修改状态的东西。MobX 中的 action 不像 redux 中是必需的，把一些修改 state 的操作都规范使用 action 做标注。
 
-在 MobX 中可以随意更改`todos.push({title:'coding', done: false})`，state 也是可以有作用的，但是这样杂乱无章不好定位是哪里触发了 state 的变化，建议在任何更新`observable`或者有副作用的函数上使用 actions。
+在 MobX 中可以随意更改`todos.push({ title:'coding', done: false })`，state 也是可以有作用的，但是这样杂乱无章不好定位是哪里触发了 state 的变化，建议在任何更新`observable`或者有副作用的函数上使用 actions。
 
 在严格模式`useStrict(true)`下，强制使用 action
 
@@ -195,7 +196,7 @@ export default class TodoListView extends Component {
 
 ## Mobx原理实现
 
-前文中提到Mobx 实现响应式数据，采用了`Object.defineProperty`或者`Proxy`
+前文中提到 Mobx 实现响应式数据，采用了`Object.defineProperty`或者`Proxy`
 
 上面讲述到使用 autorun 会在第一次执行并且依赖的属性变化时也会执行。
 
@@ -209,9 +210,9 @@ autorun(() => {
 当我们使用 observable 创建了一个可观察对象`user`，autorun 就会去监听`user.name`是否发生了改变。等于`user.name`被 autorun 监控了，一旦有任何变化就要去通知它
 
 ```jsx
-user.watchers.push(watch)
+user.name.watchers.push(watch)
 // 一旦user的数据发生了改变就要去通知观察者
-user.watchers.forEach(watch => watch())
+user.name.watchers.forEach(watch => watch())
 ```
 
 ![action](https://user-images.githubusercontent.com/38368040/167146483-d49a1e31-a716-4171-a9c8-71e1366657dd.png)
@@ -235,7 +236,7 @@ autorun(function func2() {
 })
 ```
 
-对于上述代码来说，counter.count 的 watchers 只有 func1，[user.name](http://user.name/) 的 watchers则有 func1/func2
+对于上述代码来说，counter.count 的 watchers 只有 func1，user.name 的 watchers 则有 func1/func2
 
 实现一下观察者类 Watcher，借助 shortid 来区分不同的观察者实例
 ```jsx
@@ -246,12 +247,12 @@ class Watcher {
         this.id = `ob_${property}_${shortid()}`;
         this.value = v;
     }
-		// 调用get时，收集所有观察者
+    // 调用get时，收集所有观察者
     collect() {
         dependenceManager.collect(this.id);
         return this.value;
     }
-		// 调用set时，通知所有观察者
+    // 调用set时，通知所有观察者
     notify(v: any) {
         this.value = v;
         dependenceManager.notify(this.id);
